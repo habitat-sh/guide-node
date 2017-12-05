@@ -1,0 +1,6 @@
+version: '3'
+services:
+  learn-about-me-app:
+    image: mgamini/01-basic
+    ports:
+      - 8000:8000
