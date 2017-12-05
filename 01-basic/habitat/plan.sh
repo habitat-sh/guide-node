@@ -31,10 +31,10 @@ pkg_deps=(core/node)
 # pkg_description="Some description."
 # pkg_upstream_url="http://example.com/project-name"
 
-# declare -A node_env
+declare -A node_env
 
-# # Define path to config file
-# node_env[APP_CONFIG]="{{pkg.svc_config_path}}/database.json"
+# Define path to config file
+node_env[APP_CONFIG]="{{pkg.svc_config_path}}/config.json"
 
 pkg_exports=( [port]=listening_port )
 pkg_exposes=(port)
