@@ -1,0 +1,14 @@
+{
+  "name": "02-basic-scaffolding",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nconf": "^0.9.1"
+  }
+}

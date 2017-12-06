@@ -2,6 +2,10 @@
 # See the docs at https://www.habitat.sh/docs/create-packages-configure/.
 # You can safely delete this file if you don't need it.
 
-[srv]
-host = "127.0.0.1"
-port = "27017"
+# Default values that can be updated.
+
+# Message of the Day
+message = "Hello from my Habitat!"
+
+# The port number that is listening for requests.
+listening_port = 8080
