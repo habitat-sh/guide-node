@@ -1,74 +1,75 @@
-# Packaging Sample Node Applications with Habitat
+# Before and After: Packaging a Node Application with Habitat
 
 ### Table of contents
 * [Introduction](#introduction)
-* [Add Habitat to a Sample Application](#add-habitat-to-a-sample-application)
-    * [Pre-requisites](#pre-requisites)
-    * [Steps](#steps)
+* [The Before and After, Explained](#the-before-and-after-explained)
+    * [Tools for the job](#tools-for-the-job)
+    * [Adding Habitat](#adding-habitat)
+      * [Initialize Habitat](#initializing-habitat)
+      * [Configure the application](#configuring-the-application)
+      * [Test your Plan](#testing-your-plan)
 * [FAQ](#faq)
 * [What's Next?](#whats-next)
 
+
 ## Introduction
-This repo contains three examples of adding Habitat to a very basic ‘Hello World’ application.
+Each directory in this repo contains a functioning "Hello World" application whose purpose is to provide a simple example of what an application looks like after Habitat has been added. By switching between the **start** and **finish** branches, you'll quickly get an idea of what exactly is involved.
 
-First, you’ll see how to add Habitat from scratch. Then you’ll see how to simplify the process of adding Habitat by using scaffolding that introspects the application and generates the Habitat plan files for you. The third example will be very similar to the second - both use scaffolding, while the former adds a popular framework to the mix (hint: the scaffolding works the same in both scenarios).
+  * **01-basic** This basic Hello World application demonstrates adding Habitat from scratch.
+  * **02-basic-scaffolding** Here you will see how scaffolding simplifies the setup process by introspecting the application and generating the Habitat plan files for you.
+  * **03-basic-framework** In addition to using scaffolding, this example adds the Express framework to the mix. (spoiler alert: the scaffolding works the same; no additional setup is required).
 
-The purpose of this repo is to demonstrate the before and after states. While you are more than welcome to clone this repo and run the steps locally, you can also simply switch between the **start** and **finish** branches to see what the codebase looks like after Habitat is added (i.e. the **finish** branch includes the Habitat plan files for each example).
+Not familiar with Habitat and why you would add it to your application? Check out the [FAQ](#faq) section.
 
-Lastly, you might also be asking yourself “What are the benefits of packaging my app with Habitat?” If so, check out the [FAQ](#faq) section below.
 
-## Add Habitat to a Sample Application
-### Pre-requisites
-1. Download and install the Habitat CLI tool
-2. Download and install Docker
+## The Before and After, Explained
+### Tools for the job
+For the purposes of this before-and-after demonstration, you do not need to install anything. That said, the following tools would need to be present on your workstation in order to write plans and build packages.
 
-Instructions and links can be found in the docs under [Installing Habitat](https://www.habitat.sh/docs/using-habitat/#install-habitat)
+1. Habitat CLI tool
+2. Docker
 
-### Steps
-Following are the high-level steps for adding Habitat to a basic application. Simply switch between the `start` and `finish` branches of this repo to see the results of adding Habitat to each example application.
+For the curious, you can find [installation instructions](https://www.habitat.sh/docs/using-habitat/#install-habitat) in the docs.
 
-If you choose to perform these steps locally, then you'll need to copy the contents of each file in the `finish` branch.
+### Adding Habitat
+As you switch between the **start** and **finish** branches of this repo, you'll notice several files are added. An explanation of how and why those files are added can be found below.
 
-#### Initialize Habitat
-1. `cd` to the application that you want to package (e.g. `cd 01-basic`)
-2. Define what’s required by your application
-    * **For 01-basic**, you can skip this step
-    * **For 02-basic-scaffolding & 03-basic-framework**, add `package.json`
-    * Standard for many node applications, you will define what your application requirements are in a package.json file. The example applications are simple enough that they don't require a package.json, however the Node scaffolding relies upon the existence of this file.
-3. If you haven’t done so previously, run `hab setup`
-    * Every habitat artifact belongs to an origin. As part of this step, you will create an origin and an associated key pair that is used for security purposes. Learn more about [Origins](https://www.habitat.sh/tutorials/download/create-origin/) and [Keys](https://www.habitat.sh/docs/glossary/#glossary-keys) in the docs.
-4. Generate a Habitat plan
-    * **For 01-basic**, `hab plan init`
-    * **For 02-basic-scaffolding & 03-basic-framework**, `hab plan init -s node`
-    * The plan is the key component to adding Habitat to your application. It consists of a plan.sh as well as a few configuration and hook files that are described below. Learn more about [writing plans](https://www.habitat.sh/docs/developing-packages/#write-plans) in the docs.
-    * When using scaffolding, much of the configuration is done for you. Learn more about [scaffolding](https://www.habitat.sh/docs/glossary/#glossary-scaffolding) in the docs.
+#### Initializing Habitat
 
-#### Configure the applicaiton
-1. Edit the origin name in `plan.sh`
-    * Much of what Habitat needs to package and run your application is defined in the plan file. For starters, you’ll need to replace the default origin with the one you created during hab setup. Note the difference in the plan.sh files between the example apps (hint: scaffolding greatly simplifies things).
-2. Template your configuration settings
-    * Add `config/config.json` and edit `default.toml`
-    * Reference your new `config.json` file in `app.js`
-    * By templating your configuration settings, you’ll be empowered to leverage the Habitat Supervisor for things such as runtime configuration. Learn more about the [Habitat Supervisor features](https://www.habitat.sh/docs/using-habitat/#using-packages) in the docs.
-3. Tell the Habitat Supervisor how to start and run the application
-    * **For 01-basic**, add the `hooks/init` and `hooks/run` files
-    * **For 02-basic-scaffolding & 03-basic-framework**, scaffolding handles this for you
-    * Hooks are extra sets of instructions for Habitat to set up and run your app. While scaffolding hides the hooks it generates, you can simply add additional hook files under `/hooks`, as needed. That said, only the **01-basic** `/habitat/hooks` directory contains these files on the _finish_ branch. Learn more about [hooks](https://www.habitat.sh/docs/reference/#reference-hooks) in the docs.
+  * Generate a Habitat Plan
+    * Explore the `/habitat` directory for each application while on the **finish** branch.
+    * The Habitat Plan is the key component when adding Habitat to an application. In these examples, it is simplest to think of the Plan as being equivalent to the `/habitat` directory. A Plan consists of several files, the most prominent being `plan.sh`, along with several configuration and hook files described below. Learn more about [writing plans](https://www.habitat.sh/docs/developing-packages/#write-plans) in the docs.
+    * Plan files can be written from scratch or you can generate a starter set using the `hab plan init` command. The latter method was used to create the initial **01-basic** `/habitat` directory.
+    * Alternatively, you can use scaffolding to generate a more complete set of Plan files. This is the case for the **02-basic-scaffolding** & **03-basic-framework** example applications. By simply adding a flag - `hab plan init -s node` - Habitat can introspect the application and handle much of the configuration for you. Note that you won't see a `/hooks` directory for these two sample applications as they're auto-generated by scaffolding during build time. You can still add hook files if you need them, effectively overriding the scaffolding. Learn more about [scaffolding](https://www.habitat.sh/docs/glossary/#glossary-scaffolding) in the docs.
 
-#### Build, export, and run the application
-1. Add `docker-compose.yml`
-    * While Habitat applications can be run with no additional tooling, we’ve added a sample `docker-compose.yml` to this repo in order to demonstrate a familiar and simple way to run the sample application locally.
-2. Enter the clean studio and build your package
-    * `hab studio enter` then `build`
+  * Side note about `package.json`
+    * Standard for many Node applications, it defines your application requirements. The example applications are simple enough that they don't necessitate a `package.json`. However, the Node scaffolding relies upon the existence of this file. For that reason, you'll see it present in the **02-basic-scaffolding** & **03-basic-framework** directories.
+
+#### Configuring the application
+
+  * Template the configuration settings
+    * View the `config/config.json` & `default.toml` files for each application  while on the **finish** branch.
+    * Optionally included, the `default.toml` file contains a set of TOML variables that can be used to generate dynamic configuration files.
+    * By templating your configuration settings, you’ll not only be able to re-use these defined values when you build and run your packages, but you'll also be empowered to leverage the Habitat Supervisor for things such as runtime configuration (e.g. apply a new `config.json`). Learn more about the [Habitat Supervisor features](https://www.habitat.sh/docs/using-habitat/#using-packages) in the docs.
+
+  * Tell the Habitat Supervisor how to start and run the application
+    * View the `hooks/init` & `hooks/run` files for the **01-basic** application while on the **finish** branch.
+    * The `plan.sh` file provides information for packaging the application, whereas hook files contain additional instructions for running the application.
+    * Since scaffolding generates the hooks at build time, you will not see any  _init_ or _run_ files in the **02-basic-scaffolding** & **03-basic-framework** examples. However, you can override those generated settings by simply adding hook files to the `/hooks` directory. Learn more about [hooks](https://www.habitat.sh/docs/reference/#reference-hooks) in the docs.
+
+#### Testing your Plan
+As you're writing your Plan files, you'll want to periodically check whether your application package will successfully build and run. This section goes beyond the sample apps to describe how the local development workflow might look when you're Habitizing your app.
+
+  * Building packages in the Habitat Studio
     * The Habitat Studio is a clean, self-contained, minimal environment in which you can develop, build, and package software that is free from any upstream operating system distribution. Learn more about the [Habitat Studio](https://www.habitat.sh/docs/habitat-cli/#hab-studio) in the docs.
-    * The `build` command generates a `.hart` file that gets stored in the `/results` directory.
-3. Export the `.hart` to a Docker image
-    * e.g. `hab pkg export docker yourorigin/01-basic`
-    * Again optional, packages can be exported into multiple external, immutable runtime formats. Sticking with our Docker approach to this example, we've now exported our application into a container image with a single command. Learn more about [exporting packages](https://www.habitat.sh/docs/developing-packages/#pkg-exports) in the docs.
-4. Run the application
-    * `exit` the studio. Upon exiting, everything will be removed; however, the results of your build (.hart) will remain available in your current directory.
-    * Start the application by running `docker-compose up` or `docker run -it -p 8080:8080 yourorigin/01-basic` then preview it in your browser at <a target="_blank" href="http://localhost:8080">http:localhost:8080</a>
-    * Habitat packages do not require the use of Docker to be run. Here we've simply demonstrated how easy it is to export an artifact to the format of your choice. By using Docker here, we have demonstrated the power of Habitat being platform agnostic.
+    * Once you've entered the Studio (`hab studio enter` from the application repo's root), you simply run the `build` command. This will generate a Habitat artifact (`.hart`) file that gets stored in a `/results` directory.
+  * Running the Habitized application
+    * At this point, you could start your new package directly within the Habitat Studio, or you could optionally export it to another format and run it outside the Studio. Learn more about [running packages](https://www.habitat.sh/docs/using-habitat/#using-packages) in the docs.
+  * Exporting the build artifact
+    * `.hart` files can be optionally exported into multiple external, immutable runtime formats. For example, you could export the **02-basic-scaffolding** `.hart` to a Docker image by simply running `hab pkg export docker yourorigin/02-basic-scaffolding`. Learn more about [exporting packages](https://www.habitat.sh/docs/developing-packages/#pkg-exports) in the docs.
+  * About `docker-compose.yml`
+    * While Habitat applications can be run with no additional tooling, as described above, we’ve added a sample `docker-compose.yml` to this repo in order to demonstrate a familiar and simple way to run the Habitized applications locally. After exporting the `.hart` into a Docker image, you would simply `exit` the Studio and run `docker-compose up` or a typical Docker run command like `docker run -it -p 8080:8080 yourorigin/02-basic-scaffolding` and preview it in your browser.
+
 
 ## FAQ
 **_What is Habitat and what can it do for me?_**
@@ -82,16 +83,17 @@ With a single download, you’ll be able to automate your workflow and ship your
 
 Habitat is language and platform agnostic which means you can use it to build, deploy, and manage all of your applications, both new and old, in a consistent manner.
 
-**_Do I have to use all three components?_**
+**_Can I use parts of Habitat?_**
 
-No, you can choose to use only what you need and add more capabilities as you get more comfortable. For example, you might have Jenkins build your Habitat artifact (.hart) and deploy it using your existing CI/CD workflow, then use the Habitat supervisor to manage your application. Alternatively, you could replace your current workflow and use the Habitat Build Service to create and promote new builds that are automatically picked up by the Supervisor.
+Yes, you can choose to use only what you need and add more capabilities as you get more comfortable. For example, you might have Jenkins build your Habitat artifact (.hart) and deploy it using your existing CI/CD workflow, then use the Habitat supervisor to manage your application. Alternatively, you could replace your current workflow and use the Habitat Build Service to create and promote new builds that are automatically picked up by the Supervisor.
 
 You can also defer making platform decisions until a later date. Start packaging your applications today and choose a platform service later (e.g. export to Docker images), it’s up to you.
 
 **_How do I add Habitat to an application?_**
 
 That’s precisely what the sample apps in this repo will demonstrate!
-Essentially, you’ll add a Habitat Plan which consists of a few files - a plan.sh along with a some configuration and hook files. There are a couple of ways to do this (with and without scaffolding) that you’ll see in these examples.
+Essentially, you’ll add a Habitat Plan which consists of a few files - a `plan.sh` along with a some configuration and hook files. There are a couple of ways to do this (with and without scaffolding) that you’ll see in these examples.
+
 
 ## What's next?
 Now that you’re a bit more familiar with the basics, you can turn your attention to some more in-depth materials:
